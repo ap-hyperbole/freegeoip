@@ -62,6 +62,10 @@ func NewHandler(c *Config) (http.Handler, error) {
 	mux.GET("/csv/*host", f.register("csv", csvWriter))
 	mux.GET("/xml/*host", f.register("xml", xmlWriter))
 	mux.GET("/json/*host", f.register("json", jsonWriter))
+	//Adding these as ALB will be serving this under /freegeoip
+	mux.GET("/freegeoip/csv/*host", f.register("csv", csvWriter))
+	mux.GET("/freegeoip/xml/*host", f.register("xml", xmlWriter))
+	mux.GET("/freegeoip/json/*host", f.register("json", jsonWriter))
 	go watchEvents(db)
 	return mux, nil
 }
@@ -92,7 +96,7 @@ func (f *apiHandler) config(mc *httpmux.Config) error {
 			return fmt.Errorf("failed to create newrelic application: {name: %v, key: %v}", f.conf.NewrelicName, f.conf.NewrelicKey)
 		}
 		f.nrapp = app
-	}	
+	}
 	return nil
 }
 
